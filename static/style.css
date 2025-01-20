@@ -1,0 +1,74 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: url('/static/Tomato_leaf.jpg') no-repeat center center fixed;
+    background-size: cover;  /* Ensures full coverage without stretching */
+    background-position: center;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    image-rendering: crisp-edges;  /* Enhances sharpness */
+    image-rendering: -webkit-optimize-contrast;
+    filter: contrast(1.1) brightness(1.05);  /* Slightly boosts clarity */
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    body {
+        background-image: url('/static/Tomato_img@2x.jpg'); /* Higher resolution for Retina displays */
+    }
+}
+
+
+.container {
+    width: 40%;
+    margin: 50px auto;
+    background: rgba(255, 255, 255, 0.9); /* Slight transparency */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #333;
+}
+
+form {
+    margin-top: 20px;
+}
+
+input[type="file"] {
+    padding: 10px;
+    border: 2px solid #007BFF;
+    border-radius: 5px;
+    background: white;
+    cursor: pointer;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: none;
+    background: #007BFF;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+.result {
+    margin-top: 20px;
+    padding: 10px;
+    background: #e9f5e9;
+    border-left: 5px solid #28a745;
+    display: inline-block;
+    border-radius: 5px;
+}
+
+.error {
+    background: #f8d7da;
+    border-left: 5px solid #dc3545;
+}
