@@ -20,9 +20,9 @@ app.add_middleware(
     allow_headers=["*"],  
 )
 
-MODEL=tf.keras.models.load_model(r"Saved_Model\2")
-MODEL.save(r"Saved_Model\MODEL.keras")
-MODEL.save(r"Saved_Model\MODEL.h5", save_format="h5")
+MODEL=tf.keras.models.load_model(r"Saved_Model/2")
+MODEL.save(r"Saved_Model/MODEL.keras")
+MODEL.save(r"Saved_Model/MODEL.h5", save_format="h5")
 CLASS_NAMES = [
     "Tomato__Target_Spot", "Tomato__Tomato_mosaic_virus", "Tomato__Tomato_YellowLeaf__Curl_Virus",
     "Tomato_Bacterial_spot", "Tomato_Early_blight", "Tomato_healthy", "Tomato_Late_blight",
