@@ -65,7 +65,7 @@ def run_flask():
 
 def is_fastapi_ready():
     try:
-        response = requests.get("http://0.0.0.0:9000/ping")
+        response = requests.get("http://127.0.0.1:9000/ping")
         return response.status_code == 200
     except requests.exceptions.RequestException:
         return False
@@ -74,9 +74,9 @@ if __name__ == "__main__":
     fastapi_process = multiprocessing.Process(target=run_fastapi)
     fastapi_process.start()
 
-    # while not is_fastapi_ready():
-    #     print("Waiting for FastAPI to start...")
-    time.sleep(10) 
+    while not is_fastapi_ready():
+        print("Waiting for FastAPI to start...")
+        time.sleep(1) 
 
     print("FastAPI is ready, starting Flask...")
     run_flask()
