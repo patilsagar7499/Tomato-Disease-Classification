@@ -10,10 +10,12 @@
     <div class="container">
         <h2>Upload an Image for Prediction</h2>
 
+        <p id="backend-status" style="color: red; font-weight: bold;">Checking backend status...</p>
+
         <form id="prediction-form" enctype="multipart/form-data">
-            <input type="file" name="file" id="file-input" required>
+            <input type="file" name="file" id="file-input" disabled required>
             <br><br>
-            <button type="submit">Predict</button>
+            <button type="submit" id="predict-btn" disabled>Predict</button>
         </form>
 
         <div id="prediction-result" class="result" style="display:none;">
@@ -27,17 +29,25 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        const backendUrl = 'https://tomato-disease-classification-1.onrender.com';
+
         function checkBackendReady() {
-            return $.ajax({
-                url: 'https://tomato-disease-classification-1.onrender.com/ping',  // Ping FastAPI
+            $.ajax({
+                url: backendUrl + '/ping',
                 type: 'GET',
                 timeout: 5000
+            }).done(function() {
+                $("#backend-status").text("Backend is running ✅").css("color", "green");
+                $("#file-input, #predict-btn").prop("disabled", false);
+            }).fail(function() {
+                $("#backend-status").text("Waiting for backend to start... ⏳").css("color", "orange");
+                setTimeout(checkBackendReady, 5000);  // Keep checking every 5 seconds
             });
         }
 
         function sendPredictionRequest(formData) {
             $.ajax({
-                url: 'https://tomato-disease-classification-1.onrender.com/predict',  
+                url: backendUrl + '/predict',  
                 type: 'POST',
                 data: formData,
                 contentType: false, 
@@ -60,24 +70,23 @@
         }
 
         $(document).ready(function() {
+            checkBackendReady();  // Keep checking until backend is up
+
             $("#prediction-form").submit(function(event) {
                 event.preventDefault();  
 
+                if ($("#file-input")[0].files.length === 0) {
+                    alert("Please select a file first.");
+                    return;
+                }
+
                 var formData = new FormData();
-                var fileInput = $("#file-input")[0];
-                formData.append("file", fileInput.files[0]);
+                formData.append("file", $("#file-input")[0].files[0]);
 
                 $("#loading").show();
                 $("#prediction-result").hide();
 
-                checkBackendReady()
-                    .done(function() {
-                        sendPredictionRequest(formData);
-                    })
-                    .fail(function() {
-                        $("#loading").hide();
-                        alert("Backend is not ready yet. Please try again later.");
-                    });
+                sendPredictionRequest(formData);
             });
         });
     </script>
