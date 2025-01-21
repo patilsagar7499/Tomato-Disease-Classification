@@ -5,10 +5,6 @@ import numpy as np
 from io import BytesIO
 from PIL import Image
 import tensorflow as tf
-import subprocess
-import time
-import multiprocessing
-import requests
 
 app=FastAPI()
 
@@ -57,26 +53,6 @@ async def predict(
             print(f"Error in prediction: {str(e)}")
             return {"error": f"Prediction failed: {str(e)}"}
 
-def run_fastapi():
-    uvicorn.run(app, host="localhost", port=9000)
-
-def run_flask():
-    subprocess.Popen(["python", "flask_frontend.py"])
-
-def is_fastapi_ready():
-    try:
-        response = requests.get("http://localhost:9000/ping")
-        return response.status_code == 200
-    except requests.exceptions.RequestException:
-        return False
 
 if __name__ == "__main__":
-    fastapi_process = multiprocessing.Process(target=run_fastapi)
-    fastapi_process.start()
-
-    while not is_fastapi_ready():
-        print("Waiting for FastAPI to start...")
-        time.sleep(1) 
-
-    print("FastAPI is ready, starting Flask...")
-    run_flask()
+    uvicorn.run(app, host="0.0.0.0", port=9000)
