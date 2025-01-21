@@ -58,14 +58,14 @@ async def predict(
             return {"error": f"Prediction failed: {str(e)}"}
 
 def run_fastapi():
-    uvicorn.run(app, host="0.0.0.0", port=9000)
+    uvicorn.run(app, host="localhost", port=9000)
 
 def run_flask():
     subprocess.Popen(["python", "flask_frontend.py"])
 
 def is_fastapi_ready():
     try:
-        response = requests.get("http://127.0.0.1:9000/ping")
+        response = requests.get("http://localhost:9000/ping")
         return response.status_code == 200
     except requests.exceptions.RequestException:
         return False
