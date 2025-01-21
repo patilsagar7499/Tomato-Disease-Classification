@@ -3,7 +3,7 @@ fastapi
 uvicorn
 python-multipart
 pillow
-tensorflow-serving-api==2.16.1
+tensorflow-serving-api==2.15.0
 matplotlib
 numpy
 Flask
