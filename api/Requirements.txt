@@ -7,4 +7,3 @@ tensorflow-serving-api==2.16.1
 matplotlib
 numpy
 Flask
-python==3.10.9
