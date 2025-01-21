@@ -9,19 +9,58 @@
 <body>
     <div class="container">
         <h2>Upload an Image for Prediction</h2>
-        <form action="/" method="post" enctype="multipart/form-data">
-            <input type="file" name="file" required>
+
+        <form id="prediction-form" enctype="multipart/form-data">
+            <input type="file" name="file" id="file-input" required>
             <br><br>
             <button type="submit">Predict</button>
         </form>
 
-        {% if prediction %}
-            <div class="result">
-                <h3>Prediction:</h3>
-                <p><strong>Class:</strong> {{ prediction['class'] }}</p>
-                <p><strong>Confidence:</strong> {{ prediction['confidence'] | round(2) }}</p>
-            </div>
-        {% endif %}
+        <div id="prediction-result" class="result" style="display:none;">
+            <h3>Prediction:</h3>
+            <p><strong>Class:</strong> <span id="prediction-class"></span></p>
+            <p><strong>Confidence:</strong> <span id="prediction-confidence"></span></p>
+        </div>
+
+        <div id="loading" style="display:none;">Loading...</div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#prediction-form").submit(function(event) {
+                event.preventDefault();  
+
+                var formData = new FormData();
+                var fileInput = $("#file-input")[0];
+                formData.append("file", fileInput.files[0]);
+
+                $("#loading").show();
+                $("#prediction-result").hide();
+
+                $.ajax({
+                    url: 'http://127.0.0.1:9000/predict',  
+                    type: 'POST',
+                    data: formData,
+                    contentType: false, 
+                    processData: false,  
+                    success: function(response) {
+                        $("#loading").hide();
+                        if (response.error) {
+                            alert("Error: " + response.error);
+                        } else {
+                            $("#prediction-class").text(response.class);
+                            $("#prediction-confidence").text(response.confidence.toFixed(2));
+                            $("#prediction-result").show();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $("#loading").hide();
+                        alert("Error in prediction: " + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
