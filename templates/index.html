@@ -27,6 +27,38 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        function checkBackendReady() {
+            return $.ajax({
+                url: 'https://tomato-disease-classification-1.onrender.com/ping',  // Ping FastAPI
+                type: 'GET',
+                timeout: 5000
+            });
+        }
+
+        function sendPredictionRequest(formData) {
+            $.ajax({
+                url: 'https://tomato-disease-classification-1.onrender.com/predict',  
+                type: 'POST',
+                data: formData,
+                contentType: false, 
+                processData: false,  
+                success: function(response) {
+                    $("#loading").hide();
+                    if (response.error) {
+                        alert("Error: " + response.error);
+                    } else {
+                        $("#prediction-class").text(response.class);
+                        $("#prediction-confidence").text(response.confidence.toFixed(2));
+                        $("#prediction-result").show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $("#loading").hide();
+                    alert("Error in prediction: " + xhr.responseText);
+                }
+            });
+        }
+
         $(document).ready(function() {
             $("#prediction-form").submit(function(event) {
                 event.preventDefault();  
@@ -38,27 +70,14 @@
                 $("#loading").show();
                 $("#prediction-result").hide();
 
-                $.ajax({
-                    url: 'https://tomato-disease-classification-1.onrender.com/predict',  
-                    type: 'POST',
-                    data: formData,
-                    contentType: false, 
-                    processData: false,  
-                    success: function(response) {
+                checkBackendReady()
+                    .done(function() {
+                        sendPredictionRequest(formData);
+                    })
+                    .fail(function() {
                         $("#loading").hide();
-                        if (response.error) {
-                            alert("Error: " + response.error);
-                        } else {
-                            $("#prediction-class").text(response.class);
-                            $("#prediction-confidence").text(response.confidence.toFixed(2));
-                            $("#prediction-result").show();
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        $("#loading").hide();
-                        alert("Error in prediction: " + xhr.responseText);
-                    }
-                });
+                        alert("Backend is not ready yet. Please try again later.");
+                    });
             });
         });
     </script>
