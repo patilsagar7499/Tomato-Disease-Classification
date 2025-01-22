@@ -35,6 +35,8 @@ def read_file_as_image(data)->np.ndarray:
     image=np.array(Image.open(BytesIO(data)))
     return image
 
+MIN_CONFIDENCE_THRESHOLD = 0.70
+
 @app.post("/predict")
 async def predict(
     file:UploadFile=File(...)
@@ -45,6 +47,10 @@ async def predict(
         predictions=MODEL.predict(img_batch)
         predicted_class=CLASS_NAMES[np.argmax(predictions)]
         confidence=np.max(predictions)
+
+        if confidence < MIN_CONFIDENCE_THRESHOLD:
+            return {"error": "Confidence too low. Please upload a clearer image."}
+        
         return{
             'class':predicted_class,
             'confidence':float(confidence)
