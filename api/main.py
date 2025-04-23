@@ -32,8 +32,9 @@ async def ping():
 
 
 def read_file_as_image(data)->np.ndarray:
-    image=np.array(Image.open(BytesIO(data)))
-    return image
+    image=Image.open(BytesIO(data))
+    image=image.resize((256, 256))
+    return np.array(image)
 
 MIN_CONFIDENCE_THRESHOLD = 0.70
 
@@ -62,3 +63,4 @@ async def predict(
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=9000)
+    #While 127.0.0.1 only listens on the loopback interface, 0.0.0.0 allows access from any network interface, including the loopback, making it suitable for applications that need to be accessible from other machines on the network or even the internet. 
